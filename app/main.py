@@ -1,5 +1,5 @@
 import sys
-import Scanner
+from app.Scanner import Scanner
 
 hadError = False
 
@@ -28,22 +28,13 @@ def main():
 
     # Uncomment this block to pass the first stage
     if file_contents:
-        scanner = Scanner.Scanner(file_contents)
+        scanner = Scanner(file_contents)
         tokens = scanner.scan_tokens()
         for token in tokens:
             print(token)
     else:
         # Placeholder, remove this line when implementing the scanner
         print("EOF  null")
-
-
-def error(line, message):
-    report(line, "", message)
-
-
-def report(line, where, message):
-    print(f"[line {line}] Error{where}: {message}", file=sys.stderr)
-    had_error = True
 
 
 if __name__ == "__main__":

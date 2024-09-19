@@ -1,7 +1,7 @@
 # import TokensType as tt
-from TokensType import TokensType as tt
-from Token import Token
-from main import error
+from app.TokensType import TokensType as tt
+from app.Token import Token
+from app.error import error
 
 
 class Scanner:

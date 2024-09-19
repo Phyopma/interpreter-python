@@ -7,4 +7,4 @@ class Token:
         self.line = line
 
     def __str__(self):
-        return f"{self.tokenType.name} {self.lexeme} {self.literal}"
+        return f"{self.tokenType.name} {self.lexeme} {self.literal == None and 'null' or self.literal}"
