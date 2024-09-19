@@ -1,7 +1,11 @@
 import sys
+import Scanner
+
+hadError = False
 
 
 def main():
+
     # You can use print statements as follows for debugging, they'll be visible when running tests.
     print("Logs from your program will appear here!", file=sys.stderr)
 
@@ -12,6 +16,9 @@ def main():
     command = sys.argv[1]
     filename = sys.argv[2]
 
+    if hadError:
+        exit(1)
+
     if command != "tokenize":
         print(f"Unknown command: {command}", file=sys.stderr)
         exit(1)
@@ -21,10 +28,22 @@ def main():
 
     # Uncomment this block to pass the first stage
     if file_contents:
-        raise NotImplementedError("Scanner not implemented")
+        scanner = Scanner.Scanner(file_contents)
+        tokens = scanner.scan_tokens()
+        for token in tokens:
+            print(token)
     else:
         # Placeholder, remove this line when implementing the scanner
         print("EOF  null")
+
+
+def error(line, message):
+    report(line, "", message)
+
+
+def report(line, where, message):
+    print(f"[line {line}] Error{where}: {message}", file=sys.stderr)
+    had_error = True
 
 
 if __name__ == "__main__":
