@@ -65,7 +65,7 @@ class Scanner:
         elif (current == '\n'):
             self.line += 1
         else:
-            error(self.line, "Unexpected character.")
+            error(self.line, "Unexpected character: " + current)
 
     def __advance(self):
         self.current += 1

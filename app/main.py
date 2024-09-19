@@ -1,7 +1,6 @@
 import sys
 from app.Scanner import Scanner
-
-hadError = False
+from app.error import getHadError
 
 
 def main():
@@ -16,9 +15,6 @@ def main():
     command = sys.argv[1]
     filename = sys.argv[2]
 
-    if hadError:
-        exit(1)
-
     if command != "tokenize":
         print(f"Unknown command: {command}", file=sys.stderr)
         exit(1)
@@ -26,15 +22,22 @@ def main():
     with open(filename) as file:
         file_contents = file.read()
 
-    # Uncomment this block to pass the first stage
-    if file_contents:
-        scanner = Scanner(file_contents)
-        tokens = scanner.scan_tokens()
-        for token in tokens:
-            print(token)
+        # Uncomment this block to pass the first stage
+        if file_contents:
+            scanner = Scanner(file_contents)
+
+            tokens = scanner.scan_tokens()
+            for token in tokens:
+                print(token)
+
+        else:
+            # Placeholder, remove this line when implementing the scanner
+            print("EOF  null")
+
+    if getHadError():
+        exit(65)
     else:
-        # Placeholder, remove this line when implementing the scanner
-        print("EOF  null")
+        exit(0)
 
 
 if __name__ == "__main__":
