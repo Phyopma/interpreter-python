@@ -1,6 +1,6 @@
 import sys
 from app.Scanner import Scanner
-from app.error import getHadError
+from app.error import getHadError, hadError
 
 
 def main():

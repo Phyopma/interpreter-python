@@ -64,8 +64,25 @@ class Scanner:
             pass
         elif (current == '\n'):
             self.line += 1
+        elif (current == '"'):
+            self.__string()
         else:
             error(self.line, "Unexpected character: " + current)
+
+    def __string(self):
+        while self.__peek() != '"' and not self.__is_at_end():
+            if self.__peek() == '\n':
+                self.line += 1
+            self.__advance()
+
+        if self.__is_at_end():
+            error(self.line, "Unterminated string.")
+            return
+
+        self.__advance()
+
+        value = self.source[self.start + 1:self.current - 1]
+        self.__add_token_(tt.STRING, value)
 
     def __advance(self):
         self.current += 1
