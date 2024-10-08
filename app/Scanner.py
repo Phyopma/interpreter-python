@@ -67,7 +67,31 @@ class Scanner:
         elif (current == '"'):
             self.__string()
         else:
-            error(self.line, "Unexpected character: " + current)
+            if (self.isDigit(current)):
+                self.__number()
+            else:
+                error(self.line, "Unexpected character: " + current)
+
+    def isDigit(self, c):
+        return c >= '0' and c <= '9'
+
+    def __number(self):
+        while self.isDigit(self.__peek()):
+            self.__advance()
+
+        if self.__peek() == '.' and self.isDigit(self.__peek_next()):
+            self.__advance()
+
+            while self.isDigit(self.__peek()):
+                self.__advance()
+
+        self.__add_token_(tt.NUMBER, float(
+            self.source[self.start:self.current]))
+
+    def __peek_next(self):
+        if self.current + 1 >= len(self.source):
+            return '\0'
+        return self.source[self.current + 1]
 
     def __string(self):
         while self.__peek() != '"' and not self.__is_at_end():
