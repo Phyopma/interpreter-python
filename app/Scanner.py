@@ -5,6 +5,24 @@ from app.error import error
 
 
 class Scanner:
+    keywords = {}
+    keywords["and"] = tt.AND
+    keywords["class"] = tt.CLASS
+    keywords["else"] = tt.ELSE
+    keywords["false"] = tt.FALSE
+    keywords["for"] = tt.FOR
+    keywords["fun"] = tt.FUN
+    keywords["if"] = tt.IF
+    keywords["nil"] = tt.NIL
+    keywords["or"] = tt.OR
+    keywords["print"] = tt.PRINT
+    keywords["return"] = tt.RETURN
+    keywords["super"] = tt.SUPER
+    keywords["this"] = tt.THIS
+    keywords["true"] = tt.TRUE
+    keywords["var"] = tt.VAR
+    keywords["while"] = tt.WHILE
+
     def __init__(self, source):
         self.source = source
         self.tokens = []
@@ -69,11 +87,28 @@ class Scanner:
         else:
             if (self.isDigit(current)):
                 self.__number()
+            elif (self.isAlpha(current)):
+                self.__identifier()
             else:
                 error(self.line, "Unexpected character: " + current)
 
     def isDigit(self, c):
         return c >= '0' and c <= '9'
+
+    def isAlpha(self, c):
+        return (c >= 'a' and c <= 'z') or (c >= 'A' and c <= 'Z') or c == '_'
+
+    def __identifier(self):
+        while self.isAlphaNumeric(self.__peek()):
+            self.__advance()
+        text = self.source[self.start:self.current]
+        token_type = self.keywords.get(text)
+        if token_type is None:
+            token_type = tt.IDENTIFIER
+        self.__add_token(token_type)
+
+    def isAlphaNumeric(self, c):
+        return self.isAlpha(c) or self.isDigit(c)
 
     def __number(self):
         while self.isDigit(self.__peek()):
