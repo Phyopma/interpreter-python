@@ -1,6 +1,8 @@
 import sys
 from app.Scanner import Scanner
 from app.error import getHadError, hadError
+from app.Parser import Parser
+from app.AstPrinter import AstPrinter
 
 
 def main():
@@ -15,23 +17,29 @@ def main():
     command = sys.argv[1]
     filename = sys.argv[2]
 
-    if command != "tokenize":
+    if not command in ["tokenize", "parse"]:
         print(f"Unknown command: {command}", file=sys.stderr)
         exit(1)
 
     with open(filename) as file:
         file_contents = file.read()
 
-        # Uncomment this block to pass the first stage
         if file_contents:
             scanner = Scanner(file_contents)
-
             tokens = scanner.scan_tokens()
-            for token in tokens:
-                print(token)
+            if command == "tokenize":
+                for token in tokens:
+                    print(token)
+            elif command == "parse":
+                parser = Parser(tokens)
+                expression = parser.parse()
+
+                if getHadError():
+                    exit(1)
+
+                print(AstPrinter().print(expression))
 
         else:
-            # Placeholder, remove this line when implementing the scanner
             print("EOF  null")
 
     if getHadError():
