@@ -36,7 +36,7 @@ def main():
                 expression = parser.parse()
 
                 if getHadError():
-                    exit(1)
+                    exit(65)
 
                 print(AstPrinter().print(expression))
 

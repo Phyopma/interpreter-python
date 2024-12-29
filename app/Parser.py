@@ -1,6 +1,6 @@
 from app.TokensType import TokensType as tt
 from app.tool import Expr
-from app.error import error
+from app.error import token_error
 from app.Token import Token
 
 
@@ -65,7 +65,7 @@ class Parser:
         return self.tokens[self.current - 1]
 
     def error(self, token, message):
-        error(token, message)
+        token_error(token, message)
         return Parser.ParseError()
 
     def synchronize(self):
