@@ -16,6 +16,7 @@ def main():
 
     command = sys.argv[1]
     filename = sys.argv[2]
+    # filename = f"app/{sys.argv[2]}"
 
     if not command in ["tokenize", "parse"]:
         print(f"Unknown command: {command}", file=sys.stderr)
