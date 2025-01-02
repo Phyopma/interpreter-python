@@ -1,9 +1,9 @@
-from app.tool.Expr import Expr
+from app.tool.Expr import Expr, Visitor
 from app.TokensType import TokensType as tt
 from app.Token import Token
 
 
-class AstPrinter():
+class AstPrinter(Visitor):
     def print(self, expr):
         return expr.accept(self)
 

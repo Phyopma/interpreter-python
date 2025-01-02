@@ -3,6 +3,7 @@ from app.TokensType import TokensType as tt
 from app.Token import Token
 
 hadError = False
+hadRuntimeError = False
 
 
 def error(line: int, message):
@@ -13,9 +14,18 @@ def getHadError():
     return hadError
 
 
+def getHadRuntimeError():
+    return hadRuntimeError
+
+
 def setHadError():
     global hadError
     hadError = True
+
+
+def setRuntimeError():
+    global hadRuntimeError
+    hadRuntimeError = True
 
 
 def report(line, where, message):
@@ -28,3 +38,8 @@ def token_error(token: Token, message):
         report(token.line, " at end", message)
     else:
         report(token.line, f" at '{token.lexeme}'", message)
+
+
+def runtime_error(error):
+    print(f"{error.message}\n[line {error.token.line}]", file=sys.stderr)
+    setRuntimeError()
