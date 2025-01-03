@@ -41,5 +41,5 @@ def token_error(token: Token, message):
 
 
 def runtime_error(error):
-    print(f"{error.message}\n[line {error.token.line}]", file=sys.stderr)
+    print(f"{error}\n[line {error.token.line}]", file=sys.stderr)
     setRuntimeError()

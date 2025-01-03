@@ -1,6 +1,7 @@
 from app.tool.Expr import Visitor
 from app.TokensType import TokensType as tt
 from app.RuntimeError import RuntimeError
+from app.error import runtime_error
 
 
 class Interpreter(Visitor):
@@ -10,7 +11,7 @@ class Interpreter(Visitor):
             value = self.evaluate(expr)
             print(self.stringify(value))
         except RuntimeError as e:
-            print(e)
+            runtime_error(e)
 
     def visit_literal_expr(self, expr):
         return expr.value
@@ -89,13 +90,12 @@ class Interpreter(Visitor):
         if isinstance(operand, float):
             return
         raise RuntimeError(
-            operator, f"Operand must be a number. Found {operand}")
+            operator, f"Operand must be a number.")
 
     def checkNumberOperands(self, operator, left, right):
         if isinstance(left, float) and isinstance(right, float):
             return
-        raise RuntimeError(operator, f"Operands must be numbers. Found {
-                           left} and {right}")
+        raise RuntimeError(operator, f"Operands must be numbers.")
 
     def stringify(self, obj):
         if obj is None:
