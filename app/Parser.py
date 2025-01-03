@@ -120,11 +120,11 @@ class Parser:
 
     def primary(self):
         if self.match(tt.FALSE):
-            return Expr.Literal("false")
+            return Expr.Literal(False)
         if self.match(tt.TRUE):
-            return Expr.Literal("true")
+            return Expr.Literal(True)
         if self.match(tt.NIL):
-            return Expr.Literal("nil")
+            return Expr.Literal(None)
 
         if self.match(tt.NUMBER, tt.STRING):
             return Expr.Literal(self.previous().literal)

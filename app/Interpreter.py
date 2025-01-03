@@ -100,6 +100,8 @@ class Interpreter(Visitor):
     def stringify(self, obj):
         if obj is None:
             return "nil"
+        if isinstance(obj, bool):
+            return "true" if obj else "false"
         if isinstance(obj, float):
             text = str(obj)
             if text.endswith(".0"):
