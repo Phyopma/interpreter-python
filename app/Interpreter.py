@@ -1,17 +1,28 @@
-from app.tool.Expr import Visitor
+from app.tool import Expr, Stmt
 from app.TokensType import TokensType as tt
 from app.RuntimeError import RuntimeError
 from app.error import runtime_error
 
 
-class Interpreter(Visitor):
+class Interpreter(Expr.Visitor, Stmt.Visitor):
 
-    def interpret(self, expr):
+    def interpret(self, statements):
         try:
-            value = self.evaluate(expr)
+            value = self.evaluate(statements)
             print(self.stringify(value))
+            # for statement in statements:
+            #     self.execute(statement)
         except RuntimeError as e:
             runtime_error(e)
+
+    def visit_expression_stmt(self, stmt):
+        self.evaluate(stmt.expression)
+        return None
+
+    def visit_print_stmt(self, stmt):
+        value = self.evaluate(stmt.expression)
+        print(self.stringify(value))
+        return None
 
     def visit_literal_expr(self, expr):
         return expr.value
@@ -78,6 +89,9 @@ class Interpreter(Visitor):
 
     def evaluate(self, expr):
         return expr.accept(self)
+
+    def exceute(self, stmt):
+        return stmt.accept(self)
 
     def isTruthy(self, obj):
         if obj is None:

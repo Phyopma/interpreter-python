@@ -51,8 +51,10 @@ def execute_command(command, file_contents):
         print(AstPrinter().print(expression))
     elif command == "evaluate":
         parser = Parser(tokens)
+        # statements = parser.parse()
         expression = parser.parse()
         interpreter = Interpreter()
+        # interpreter.interpret(statements)
         interpreter.interpret(expression)
 
 
