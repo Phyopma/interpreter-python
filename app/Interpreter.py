@@ -56,7 +56,7 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         return None
 
     def visit_variable_expr(self, expr):
-        return self.environment.get(expr.name.lexeme)
+        return self.environment.get(expr.name)
 
     def checkType(self, value, expected_type, operator, message):
         if isinstance(value, expected_type):
