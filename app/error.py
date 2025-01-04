@@ -30,7 +30,6 @@ def setRuntimeError():
 
 def report(line, where, message):
     print(f"[line {line}] Error{where}: {message}", file=sys.stderr)
-    setHadError()
 
 
 def token_error(token: Token, message):
@@ -38,6 +37,7 @@ def token_error(token: Token, message):
         report(token.line, " at end", message)
     else:
         report(token.line, f" at '{token.lexeme}'", message)
+    setHadError()
 
 
 def runtime_error(error):

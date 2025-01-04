@@ -1,17 +1,19 @@
 from app.tool import Expr, Stmt
 from app.TokensType import TokensType as tt
 from app.RuntimeError import RuntimeError
-from app.error import runtime_error
+from app.error import runtime_error, token_error
 
 
 class Interpreter(Expr.Visitor, Stmt.Visitor):
 
-    def interpret(self, statements):
+    def interpret(self, statements, command):
         try:
-            value = self.evaluate(statements)
-            print(self.stringify(value))
-            # for statement in statements:
-            #     self.execute(statement)
+            if (command == "run"):
+                for statement in statements:
+                    self.execute(statement)
+            elif (command == "evaluate"):
+                value = self.evaluate(statements)
+                print(self.stringify(value))
         except RuntimeError as e:
             runtime_error(e)
 
@@ -85,12 +87,13 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
             return True
         if a is None:
             return False
+            printf(a, b, a == b)
         return a == b
 
     def evaluate(self, expr):
         return expr.accept(self)
 
-    def exceute(self, stmt):
+    def execute(self, stmt):
         return stmt.accept(self)
 
     def isTruthy(self, obj):
