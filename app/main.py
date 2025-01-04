@@ -40,12 +40,11 @@ def execute_command(command, file_contents):
     scanner = Scanner(file_contents)
     tokens = scanner.scan_tokens()
 
-    if getHadError():
-        exit(65)
-
     if command == "tokenize":
         for token in tokens:
             print(token)
+        if getHadError():
+            exit(65)
         return
 
     parser = Parser(tokens)

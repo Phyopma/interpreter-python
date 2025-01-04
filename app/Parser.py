@@ -1,9 +1,7 @@
 from app.TokensType import TokensType as tt
-from app.tool import Expr
-from app.error import token_error
+from app.tool import Expr, Stmt
+from app.error import token_error, runtime_error
 from app.RuntimeError import RuntimeError
-from app.error import runtime_error
-from app.tool import Stmt
 
 
 class Parser:
@@ -21,11 +19,10 @@ class Parser:
                 while (not self.is_at_end()):
                     statements.append(self.statement())
                 return statements
-            else:
-                return self.expression()
-        # except RuntimeError as e:
-        #     runtime_error(e)
-        #     return None
+            return self.expression()
+        except RuntimeError as e:
+            runtime_error(e)
+            return None
         except Parser.ParseError:
             return None
 
@@ -68,9 +65,9 @@ class Parser:
     def consume(self, type, message):
         if self.check(type):
             return self.advance()
+        if type == tt.SEMICOLON:
+            raise RuntimeError(self.peek(), message)
         raise self.error(self.peek(), message)
-        # raise RuntimeError(self.peek(), message) if type == tt.SEMICOLON else self.error(
-        #     self.peek(), message)
 
     def check(self, type):
         if self.is_at_end():
