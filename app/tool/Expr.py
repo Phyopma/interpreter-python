@@ -2,14 +2,12 @@ from abc import ABC, abstractmethod
 
 
 class Expr(ABC):
-
     @abstractmethod
     def accept(self, visitor):
         pass
 
 
 class Visitor(ABC):
-
     @abstractmethod
     def visit_binary_expr(self, expr):
         pass
@@ -24,6 +22,10 @@ class Visitor(ABC):
 
     @abstractmethod
     def visit_unary_expr(self, expr):
+        pass
+
+    @abstractmethod
+    def visit_variable_expr(self, expr):
         pass
 
 
@@ -60,3 +62,11 @@ class Unary(Expr):
 
     def accept(self, visitor):
         return visitor.visit_unary_expr(self)
+
+
+class Variable(Expr):
+    def __init__(self, name):
+        self.name = name
+
+    def accept(self, visitor):
+        return visitor.visit_variable_expr(self)

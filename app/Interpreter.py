@@ -1,10 +1,14 @@
 from app.tool import Expr, Stmt
 from app.TokensType import TokensType as tt
 from app.RuntimeError import RuntimeError
-from app.error import runtime_error, token_error
+from app.error import runtime_error
+from app.Environment import Environment
 
 
 class Interpreter(Expr.Visitor, Stmt.Visitor):
+
+    def __init__(self):
+        self.environment = Environment()
 
     def interpret(self, statements, command):
         try:
@@ -26,6 +30,14 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         print(self.stringify(value))
         return None
 
+    def visit_var_stmt(self, stmt):
+        value = None
+        if stmt.initializer is not None:
+            value = self.evaluate(stmt.initializer)
+
+        self.environment.define(stmt.name.lexeme, value)
+        return None
+
     def visit_literal_expr(self, expr):
         return expr.value
 
@@ -43,43 +55,61 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
 
         return None
 
+    def visit_variable_expr(self, expr):
+        return self.environment.get(expr.name.lexeme)
+
+    def checkType(self, value, expected_type, operator, message):
+        if isinstance(value, expected_type):
+            return True
+        raise RuntimeError(operator, message)
+
     def visit_binary_expr(self, expr):
         left = self.evaluate(expr.left)
         right = self.evaluate(expr.right)
 
-        if (expr.operator.tokenType == tt.MINUS):
-            self.checkNumberOperands(expr.operator, left, right)
-            return left - right
-        elif (expr.operator.tokenType == tt.SLASH):
-            self.checkNumberOperands(expr.operator, left, right)
-            return left / right
-        elif (expr.operator.tokenType == tt.STAR):
-            self.checkNumberOperands(expr.operator, left, right)
-            return left * right
-        elif (expr.operator.tokenType == tt.PLUS):
+        type_map = {
+            tt.MINUS: (float, "Operands must be numbers"),
+            tt.SLASH: (float, "Operands must be numbers"),
+            tt.STAR: (float, "Operands must be numbers"),
+            tt.GREATER: (float, "Operands must be numbers"),
+            tt.GREATER_EQUAL: (float, "Operands must be numbers"),
+            tt.LESS: (float, "Operands must be numbers"),
+            tt.LESS_EQUAL: (float, "Operands must be numbers"),
+        }
+
+        op_type = expr.operator.tokenType
+        if op_type in type_map:
+            expected_type, message = type_map[op_type]
+            self.checkType(left, expected_type, expr.operator, message)
+            self.checkType(right, expected_type, expr.operator, message)
+
+            if op_type == tt.MINUS:
+                return left - right
+            elif op_type == tt.SLASH:
+                return left / right
+            elif op_type == tt.STAR:
+                return left * right
+            elif op_type == tt.GREATER:
+                return left > right
+            elif op_type == tt.GREATER_EQUAL:
+                return left >= right
+            elif op_type == tt.LESS:
+                return left < right
+            elif op_type == tt.LESS_EQUAL:
+                return left <= right
+
+        elif op_type == tt.PLUS:
             if isinstance(left, float) and isinstance(right, float):
                 return left + right
             if isinstance(left, str) and isinstance(right, str):
                 return left + right
             raise RuntimeError(
                 expr.operator, "Operands must be two numbers or two strings.")
-
-        elif (expr.operator.tokenType == tt.GREATER):
-            self.checkNumberOperands(expr.operator, left, right)
-            return left > right
-        elif (expr.operator.tokenType == tt.GREATER_EQUAL):
-            self.checkNumberOperands(expr.operator, left, right)
-            return left >= right
-        elif (expr.operator.tokenType == tt.LESS):
-            self.checkNumberOperands(expr.operator, left, right)
-            return left < right
-        elif (expr.operator.tokenType == tt.LESS_EQUAL):
-            self.checkNumberOperands(expr.operator, left, right)
-            return left <= right
-        elif (expr.operator.tokenType == tt.BANG_EQUAL):
+        elif op_type == tt.BANG_EQUAL:
             return not self.isEqual(left, right)
-        elif (expr.operator.tokenType == tt.EQUAL_EQUAL):
+        elif op_type == tt.EQUAL_EQUAL:
             return self.isEqual(left, right)
+
         return None
 
     def isEqual(self, a, b):

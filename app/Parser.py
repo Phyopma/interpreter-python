@@ -17,7 +17,7 @@ class Parser:
             if command == "run":
                 statements = []
                 while (not self.is_at_end()):
-                    statements.append(self.statement())
+                    statements.append(self.declaration())
                 return statements
             return self.expression()
         except RuntimeError as e:
@@ -29,6 +29,15 @@ class Parser:
     def expression(self):
         return self.equality()
 
+    def declaration(self):
+        try:
+            if self.match(tt.VAR):
+                return self.var_declaration()
+            return self.statement()
+        except Parser.ParseError:
+            self.synchronize()
+            return None
+
     def statement(self):
         if self.match(tt.PRINT):
             return self.print_statement()
@@ -38,6 +47,16 @@ class Parser:
         value = self.expression()
         self.consume(tt.SEMICOLON, "Expect ';' after value.")
         return Stmt.Print(value)
+
+    def var_declaration(self):
+        name = self.consume(tt.IDENTIFIER, "Expect variable name.")
+
+        intializer = None
+        if self.match(tt.EQUAL):
+            intializer = self.expression()
+
+        self.consume(tt.SEMICOLON, "Expect ';' after variable declaration.")
+        return Stmt.Var(name, intializer)
 
     def expression_statement(self):
         expr = self.expression()
@@ -152,6 +171,9 @@ class Parser:
 
         if self.match(tt.NUMBER, tt.STRING):
             return Expr.Literal(self.previous().literal)
+
+        if self.match(tt.IDENTIFIER):
+            return Expr.Variable(self.previous())
 
         if self.match(tt.LEFT_PAREN):
             expr = self.expression()

@@ -1,4 +1,4 @@
-from app.tool.Expr import Expr, Visitor
+from app.tool.Expr import Visitor
 from app.TokensType import TokensType as tt
 from app.Token import Token
 
@@ -20,6 +20,9 @@ class AstPrinter(Visitor):
 
     def visit_unary_expr(self, expr):
         return self.parenthesize(expr.operator.lexeme, expr.right)
+
+    def visit_variable_expr(self, expr):
+        return expr.name.lexeme
 
     def parenthesize(self, name, *exprs):
         builder = []

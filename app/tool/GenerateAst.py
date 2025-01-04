@@ -10,12 +10,14 @@ def main():
         "Binary   : left, operator, right",
         "Grouping : expression",
         "Literal  : value",
-        "Unary    : operator, right"
+        "Unary    : operator, right",
+        "Variable : name"
     ])
 
     define_ast(output_dir, "Stmt", [
         "Expression : expression",
         "Print      : expression",
+        "Var        : name, initializer"
     ])
 
 
