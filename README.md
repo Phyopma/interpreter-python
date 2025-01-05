@@ -1,50 +1,94 @@
-[![progress-banner](https://backend.codecrafters.io/progress/interpreter/4a138a50-e5b5-4cbf-80e1-5be63bb46ca4)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+# Lox Interpreter
 
-This is a starting point for Python solutions to the
-["Build your own Interpreter" Challenge](https://app.codecrafters.io/courses/interpreter/overview).
+This project is a Python implementation of an interpreter for the Lox programming language, as described in the book _Crafting Interpreters_ by Robert Nystrom. The interpreter supports tokenization, parsing, and execution of Lox code.
 
-This challenge follows the book
-[Crafting Interpreters](https://craftinginterpreters.com/) by Robert Nystrom.
+---
 
-In this challenge you'll build an interpreter for
-[Lox](https://craftinginterpreters.com/the-lox-language.html), a simple
-scripting language. Along the way, you'll learn about tokenization, ASTs,
-tree-walk interpreters and more.
+## Project Structure
 
-Before starting this challenge, make sure you've read the "Welcome" part of the
-book that contains these chapters:
+### Files and Directories
 
-- [Introduction](https://craftinginterpreters.com/introduction.html) (chapter 1)
-- [A Map of the Territory](https://craftinginterpreters.com/a-map-of-the-territory.html)
-  (chapter 2)
-- [The Lox Language](https://craftinginterpreters.com/the-lox-language.html)
-  (chapter 3)
+- `.codecrafters/`: Contains scripts for running and compiling the program on CodeCrafters.
+- `.vscode/`: Contains Visual Studio Code configuration files.
+- `app/`: Contains the main source code for the interpreter.
+  - `AstPrinter.py`: Implements the AST printer for debugging.
+  - `Environment.py`: Manages variable scopes and environments.
+  - `error.py`: Handles error reporting.
+  - `Interpreter.py`: Implements the interpreter for executing Lox code.
+  - `main.py`: Entry point for the interpreter.
+  - `Parser.py`: Implements the parser for generating the AST.
+  - `RuntimeError.py`: Defines runtime errors.
+  - `Scanner.py`: Implements the scanner for tokenizing the source code.
+  - `Token.py`: Defines the `Token` class.
+  - `TokensType.py`: Defines the types of tokens.
+- `tool/`: Contains tools for generating AST classes.
+  - `Expr.py`: Defines the expression classes.
+  - `GenerateAst.py`: Script for generating AST classes.
+  - `Stmt.py`: Defines the statement classes.
+- `codecrafters.yml`: Configuration file for CodeCrafters.
+- `Pipfile`: Defines the Python environment and dependencies.
+- `Pipfile.lock`: Lock file for the Python environment.
+- `README.md`: This file.
+- `test.lox`: Sample Lox code for testing.
+- `your_program.sh`: Script for running the program locally.
 
-These chapters don't involve writing code, so they won't be covered in this
-challenge. This challenge will start from chapter 4,
-[Scanning](https://craftinginterpreters.com/scanning.html).
+---
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+## Getting Started
 
-# Passing the first stage
+### Prerequisites
 
-The entry point for your program is in `app/main.py`. Study and uncomment the
-relevant code, and push your changes to pass the first stage:
+- Python 3.12
+- Pipenv
 
-```sh
-git commit -am "pass 1st stage" # any msg
-git push origin master
+### Installation
+
+Clone the repository:
+
+```bash
+git clone <repository_url>
+cd <repository_directory>
 ```
 
-Time to move on to the next stage!
+---
 
-# Stage 2 & beyond
+## Running the Interpreter
 
-Note: This section is for stages 2 and beyond.
+To run the interpreter, use the `your_program.sh` script:
 
-1. Ensure you have `python (3.12)` installed locally
-2. Run `./your_program.sh` to run your program, which is implemented in
-   `app/main.py`.
-3. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+Where `<command>` can be one of the following:
+
+- `tokenize`: Tokenizes the source code and prints the tokens.
+- `parse`: Parses the source code and prints the AST.
+- `evaluate`: Evaluates a single expression and prints the result.
+- `run`: Executes the source code.
+
+---
+
+## Development
+
+To run the program in a development environment, you can use the provided VS Code configuration. Open the project in VS Code and use the debugger to run the `main.py` module.
+
+---
+
+## Testing
+
+To test the interpreter, you can use the provided `test.lox` file or create your own Lox scripts.
+
+---
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+---
+
+## Acknowledgements
+
+This project follows the book _Crafting Interpreters_ by Robert Nystrom. Special thanks to the author for providing such a comprehensive guide to building interpreters.
