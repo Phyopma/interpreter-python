@@ -16,6 +16,7 @@ def main():
     ])
 
     define_ast(output_dir, "Stmt", [
+        "Block      : statements",
         "Expression : expression",
         "Print      : expression",
         "Var        : name, initializer"
