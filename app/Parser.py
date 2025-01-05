@@ -54,11 +54,25 @@ class Parser:
             return None
 
     def statement(self):
+        if self.match(tt.IF):
+            return self.if_statement()
         if self.match(tt.PRINT):
             return self.print_statement()
         if self.match(tt.LEFT_BRACE):
             return Stmt.Block(self.block())
         return self.expression_statement()
+
+    def if_statement(self):
+        self.consume(tt.LEFT_PAREN, "Expect '(' after 'if'.")
+        condition = self.expression()
+        self.consume(tt.RIGHT_PAREN, "Expect ')' after if condition.")
+
+        then_branch = self.statement()
+        else_branch = None
+        if self.match(tt.ELSE):
+            else_branch = self.statement()
+
+        return Stmt.If(condition, then_branch, else_branch)
 
     def print_statement(self):
         value = self.expression()
@@ -87,6 +101,7 @@ class Parser:
             statements.append(self.declaration())
 
         self.consume(tt.RIGHT_BRACE, "Expect '}' after block.")
+
         return statements
 
     def equality(self):
