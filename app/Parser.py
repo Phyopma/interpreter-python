@@ -27,7 +27,22 @@ class Parser:
             return None
 
     def expression(self):
-        return self.equality()
+        return self.assignment()
+
+    def assignment(self):
+        expr = self.equality()
+
+        if self.match(tt.EQUAL):
+            equals = self.previous()
+            value = self.assignment()
+
+            if isinstance(expr, Expr.Variable):
+                name = expr.name
+                return Expr.Assign(name, value)
+
+            self.error(equals, "Invalid assignment target.")
+
+        return expr
 
     def declaration(self):
         try:

@@ -7,6 +7,7 @@ def main():
         exit(64)
     output_dir = sys.argv[1]
     define_ast(output_dir, "Expr", [
+        "Assign   : name, value",
         "Binary   : left, operator, right",
         "Grouping : expression",
         "Literal  : value",
