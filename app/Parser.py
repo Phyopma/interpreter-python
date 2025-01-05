@@ -74,13 +74,58 @@ class Parser:
             return None
 
     def statement(self):
+        if self.match(tt.FOR):
+            return self.for_statement()
         if self.match(tt.IF):
             return self.if_statement()
         if self.match(tt.PRINT):
             return self.print_statement()
+        if self.match(tt.WHILE):
+            return self.while_statement()
         if self.match(tt.LEFT_BRACE):
             return Stmt.Block(self.block())
         return self.expression_statement()
+
+    def for_statement(self):
+        self.consume(tt.LEFT_PAREN, "Expect '(' after 'for'.")
+
+        initializer = None
+        if self.match(tt.SEMICOLON):
+            initializer = None
+        elif self.match(tt.VAR):
+            initializer = self.var_declaration()
+        else:
+            initializer = self.expression_statement()
+
+        condition = None
+        if not self.check(tt.SEMICOLON):
+            condition = self.expression()
+        self.consume(tt.SEMICOLON, "Expect ';' after loop condition.")
+
+        increment = None
+        if not self.check(tt.RIGHT_PAREN):
+            increment = self.expression()
+        self.consume(tt.RIGHT_PAREN, "Expect ')' after for clauses.")
+
+        body = self.statement()
+
+        if increment is not None:
+            body = Stmt.Block([body, Stmt.Expression(increment)])
+        if condition is None:
+            condition = Expr.Literal(True)
+        body = Stmt.While(condition, body)
+        if initializer is not None:
+            body = Stmt.Block([initializer, body])
+
+        return body
+
+    def while_statement(self):
+        self.consume(tt.LEFT_PAREN, "Expect '(' after 'while'.")
+        condition = self.expression()
+        self.consume(tt.RIGHT_PAREN, "Expect ')' after condition.")
+        body = self.statement()
+
+        return Stmt.While(condition, body)
 
     def if_statement(self):
         self.consume(tt.LEFT_PAREN, "Expect '(' after 'if'.")
