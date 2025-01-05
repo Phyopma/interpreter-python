@@ -53,6 +53,16 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
     def visit_literal_expr(self, expr):
         return expr.value
 
+    def visit_logical_expr(self, expr):
+        left = self.evaluate(expr.left)
+        if expr.operator.tokenType == tt.OR:
+            if self.isTruthy(left):
+                return left
+        else:
+            if not self.isTruthy(left):
+                return left
+        return self.evaluate(expr.right)
+
     def visit_grouping_expr(self, expr):
         return self.evaluate(expr.expression)
 

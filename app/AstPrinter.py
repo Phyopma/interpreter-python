@@ -18,6 +18,9 @@ class AstPrinter(Visitor):
             return "nil"
         return str(expr.value).lower()
 
+    def visit_logical_expr(self, expr):
+        return self.parenthesize(expr.operator.lexeme, expr.left, expr.right)
+
     def visit_unary_expr(self, expr):
         return self.parenthesize(expr.operator.lexeme, expr.right)
 
