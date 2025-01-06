@@ -5,6 +5,7 @@ from app.error import runtime_error
 from app.Environment import Environment
 from app.Callable import Callable
 from app.Function import Function
+from app.Return import Return
 
 
 class Interpreter(Expr.Visitor, Stmt.Visitor):
@@ -40,7 +41,7 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         return None
 
     def visit_function_stmt(self, stmt):
-        function = Function(stmt)
+        function = Function(stmt, self.environment)
         self.environment.define(stmt.name.lexeme, function)
         return None
 
@@ -55,6 +56,12 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         value = self.evaluate(stmt.expression)
         print(self.stringify(value))
         return None
+
+    def visit_return_stmt(self, stmt):
+        value = None
+        if stmt.value is not None:
+            value = self.evaluate(stmt.value)
+        raise Return(value)
 
     def visit_var_stmt(self, stmt):
         value = None
