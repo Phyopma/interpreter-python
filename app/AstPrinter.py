@@ -24,6 +24,9 @@ class AstPrinter(Visitor):
     def visit_unary_expr(self, expr):
         return self.parenthesize(expr.operator.lexeme, expr.right)
 
+    def visit_call_expr(self, expr):
+        return self.parenthesize("call", expr.callee, expr.paren, expr.arguments)
+
     def visit_variable_expr(self, expr):
         return expr.name.lexeme
 

@@ -3,12 +3,25 @@ from app.TokensType import TokensType as tt
 from app.RuntimeError import RuntimeError
 from app.error import runtime_error
 from app.Environment import Environment
+from app.Callable import Callable
 
 
 class Interpreter(Expr.Visitor, Stmt.Visitor):
+    class ClockCallable(Callable):
+        def arity(self):
+            return 0
+
+        def call(self, interpreter, arguments):
+            import time
+            return time.time()
+
+        def __str__(self):
+            return "<native fn>"
 
     def __init__(self):
-        self.environment = Environment()
+        self.globals = Environment()
+        self.globals.define("clock", self.ClockCallable())
+        self.environment = self.globals
 
     def interpret(self, statements, command):
         try:
@@ -138,6 +151,17 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
             return self.isEqual(left, right)
 
         return None
+
+    def visit_call_expr(self, expr):
+        callee = self.evaluate(expr.callee)
+        arguments = [self.evaluate(argument) for argument in expr.arguments]
+        if not isinstance(callee, Callable):
+            raise RuntimeError(
+                expr.paren, "Can only call functions and classes.")
+        if len(arguments) != callee.arity():
+            raise RuntimeError(
+                expr.paren, f"Expected {callee.arity()} arguments but got {len(arguments)}.")
+        return callee.call(self, arguments)
 
     def isEqual(self, a, b):
         if a is None and b is None:
