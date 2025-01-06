@@ -4,6 +4,7 @@ from app.RuntimeError import RuntimeError
 from app.error import runtime_error
 from app.Environment import Environment
 from app.Callable import Callable
+from app.Function import Function
 
 
 class Interpreter(Expr.Visitor, Stmt.Visitor):
@@ -36,6 +37,11 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
 
     def visit_expression_stmt(self, stmt):
         self.evaluate(stmt.expression)
+        return None
+
+    def visit_function_stmt(self, stmt):
+        function = Function(stmt)
+        self.environment.define(stmt.name.lexeme, function)
         return None
 
     def visit_if_stmt(self, stmt):
@@ -178,10 +184,10 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         return stmt.accept(self)
 
     def visit_block_stmt(self, stmt):
-        self.executeBlock(stmt.statements, Environment(self.environment))
+        self.execute_block(stmt.statements, Environment(self.environment))
         return None
 
-    def executeBlock(self, statements, environment):
+    def execute_block(self, statements, environment):
         previous = self.environment
         try:
             self.environment = environment
