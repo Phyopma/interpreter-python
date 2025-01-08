@@ -82,10 +82,10 @@ class Parser:
             return self.if_statement()
         if self.match(tt.PRINT):
             return self.print_statement()
-        if self.match(tt.RETURN):
-            return self.return_statement()
         if self.match(tt.WHILE):
             return self.while_statement()
+        if self.match(tt.RETURN):
+            return self.return_statement()
         if self.match(tt.LEFT_BRACE):
             return Stmt.Block(self.block())
         return self.expression_statement()

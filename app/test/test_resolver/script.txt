@@ -1,0 +1,22 @@
+### TEST: variable_self_init
+{
+    var a = a + 2;
+}
+### END
+
+### TEST: variable_redeclaration
+{
+    var a = 1;
+    var a = 2;
+}
+### END
+
+### TEST: undefined_variable
+{
+    print b;
+}
+### END
+
+### TEST: top_level_return
+return "test";
+### END

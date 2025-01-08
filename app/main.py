@@ -4,6 +4,7 @@ from app.error import getHadError, getHadRuntimeError
 from app.Parser import Parser
 from app.AstPrinter import AstPrinter
 from app.Interpreter import Interpreter
+from app.Resolver import Resolver
 
 
 class CommandExecutor:
@@ -43,6 +44,12 @@ class CommandExecutor:
                 print(AstPrinter().print(statements))
             elif self.command in ["evaluate", "run"]:
                 self.interpreter = Interpreter()
+                self.resolver = Resolver(self.interpreter)
+                self.resolver.resolve(statements)
+
+                if getHadError():
+                    return 65
+
                 self.interpreter.interpret(statements, self.command)
                 if getHadRuntimeError():
                     return 70

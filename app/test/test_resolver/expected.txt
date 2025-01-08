@@ -1,0 +1,20 @@
+### TEST: variable_self_init
+Logs from your program will appear here!
+[line 2] Error at 'a': Cannot read local variable in its own initializer.
+### END
+
+### TEST: variable_redeclaration
+Logs from your program will appear here!
+[line 3] Error at 'a': Variable with this name already declared in this scope.
+### END
+
+### TEST: undefined_variable
+Logs from your program will appear here!
+Undefined variable 'b'.
+[line 2]
+### END
+
+### TEST: top_level_return
+Logs from your program will appear here!
+[line 1] Error at 'return': Cannot return from top-level code.
+### END

@@ -24,6 +24,7 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         self.globals = Environment()
         self.globals.define("clock", self.ClockCallable())
         self.environment = self.globals
+        self.locals = {}
 
     def interpret(self, statements, command):
         try:
@@ -78,7 +79,12 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
 
     def visit_assign_expr(self, expr):
         value = self.evaluate(expr.value)
-        self.environment.assign(expr.name, value)
+        distance = self.locals.get(expr)
+        if distance is not None:
+            self.environment.assignAt(distance, expr.name, value)
+        else:
+            self.globals.assign(expr.name, value)
+        # self.environment.assign(expr.name, value)
         return value
 
     def visit_literal_expr(self, expr):
@@ -109,7 +115,14 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         return None
 
     def visit_variable_expr(self, expr):
-        return self.environment.get(expr.name)
+        return self.lookUpVariable(expr.name, expr)
+        # return self.environment.get(expr.name)
+
+    def lookUpVariable(self, name, expr):
+        distance = self.locals.get(expr)
+        if distance is not None:
+            return self.environment.getAt(distance, name.lexeme)
+        return self.globals.get(name)
 
     def checkType(self, value, expected_type, operator, message):
         if isinstance(value, expected_type):
@@ -189,6 +202,9 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
 
     def execute(self, stmt):
         return stmt.accept(self)
+
+    def resolve(self, expr, depth):
+        self.locals[expr] = depth
 
     def visit_block_stmt(self, stmt):
         self.execute_block(stmt.statements, Environment(self.environment))
