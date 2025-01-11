@@ -18,3 +18,8 @@ Undefined variable 'b'.
 Logs from your program will appear here!
 [line 1] Error at 'return': Cannot return from top-level code.
 ### END
+
+### TEST: static_scope
+global
+global
+### END

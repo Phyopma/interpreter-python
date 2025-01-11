@@ -1,1 +1,14 @@
-return "test";
+var i = 0;
+fun makeCounter() {
+  var i = 0;
+  fun count() {
+    i = i + 3;
+    print i;
+  }
+
+  return count;
+}
+
+var counter = makeCounter();
+counter();
+counter();

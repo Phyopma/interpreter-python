@@ -20,3 +20,16 @@
 ### TEST: top_level_return
 return "test";
 ### END
+
+### TEST: static_scope
+var a = "global";
+{
+  fun showA() {
+    print a;
+  }
+
+  showA();
+  var a = "block";
+  showA();
+}
+### END

@@ -96,7 +96,6 @@ class Resolver(Expr.Visitor, Stmt.Visitor):
         self.resolve(stmt.body)
         self.end_scope()
         self.current_function = enclosing_function
-        return None
 
     def visit_expression_stmt(self, stmt):
         self.resolve_expr(stmt.expression)
