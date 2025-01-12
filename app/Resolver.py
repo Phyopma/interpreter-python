@@ -2,6 +2,7 @@ import app.tool.Expr as Expr
 import app.tool.Stmt as Stmt
 import app.error as error
 from app.FunctionsType import FunctionsType as ft
+from app.ClassType import ClassType as ct
 
 
 class Resolver(Expr.Visitor, Stmt.Visitor):
@@ -9,6 +10,7 @@ class Resolver(Expr.Visitor, Stmt.Visitor):
     # stack of dictionaries
     scopes = []
     current_function = ft.NONE
+    current_class = ct.NONE
 
     def __init__(self, interpreter):
         self.interpreter = interpreter
@@ -17,6 +19,22 @@ class Resolver(Expr.Visitor, Stmt.Visitor):
         self.begin_scope()
         self.resolve(stmt.statements)
         self.end_scope()
+        return None
+
+    def visit_class_stmt(self, stmt):
+        enclosing_class = self.current_class
+        self.current_class = ct.CLASS
+        self.declare(stmt.name)
+        self.begin_scope()
+        self.scopes[-1]["this"] = True
+        for method in stmt.methods:
+            declaration = ft.METHOD
+            if method.name.lexeme == "init":
+                declaration = ft.INITIALIZER
+            self.resolve_function(method, declaration)
+        self.define(stmt.name)
+        self.end_scope()
+        self.current_class = enclosing_class
         return None
 
     def resolve(self, statements):
@@ -117,6 +135,9 @@ class Resolver(Expr.Visitor, Stmt.Visitor):
             error.token_error(
                 stmt.keyword, "Cannot return from top-level code.")
         if stmt.value is not None:
+            if self.current_function == ft.INITIALIZER:
+                error.token_error(
+                    stmt.keyword, "Cannot return a value from an initializer.")
             self.resolve_expr(stmt.value)
         return None
 
@@ -136,6 +157,10 @@ class Resolver(Expr.Visitor, Stmt.Visitor):
             self.resolve_expr(argument)
         return None
 
+    def visit_get_expr(self, expr):
+        self.resolve_expr(expr.object)
+        return None
+
     def visit_grouping_expr(self, expr):
         self.resolve_expr(expr.expression)
         return None
@@ -146,6 +171,19 @@ class Resolver(Expr.Visitor, Stmt.Visitor):
     def visit_logical_expr(self, expr):
         self.resolve_expr(expr.left)
         self.resolve_expr(expr.right)
+        return None
+
+    def visit_set_expr(self, expr):
+        self.resolve_expr(expr.value)
+        self.resolve_expr(expr.object)
+        return None
+
+    def visit_this_expr(self, expr):
+        if self.current_class == ct.NONE:
+            error.token_error(
+                expr.keyword, "Cannot use 'this' outside of a class.")
+            return None
+        self.resolve_local(expr, expr.keyword)
         return None
 
     def visit_unary_expr(self, expr):

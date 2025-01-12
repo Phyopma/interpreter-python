@@ -1,0 +1,100 @@
+### TEST: bare_class_def
+class DevonshireCream {
+  serveOn() {
+    return "Scones";
+  }
+}
+
+print DevonshireCream;
+### END
+
+### TEST: bare_Instance_decl
+class Bagel {}
+var bagel = Bagel();
+print bagel;
+### END
+
+
+### TEST: instance_property_set_get
+class Bagel {}
+var bagel = Bagel();
+bagel.cal = "10 kcal";
+print bagel.cal;
+### END
+
+
+### TEST: instance_property_get_without_set
+class Bagel {}
+var bagel = Bagel();
+print bagel.cal;
+### END
+
+
+### TEST: method_set_and_call
+class Bacon {
+  eat() {
+    print "Crunch crunch crunch!";
+  }
+}
+Bacon().eat();
+### END
+
+
+### TEST: method_call_without_def
+class Bacon {
+  eat() {
+    print "Crunch crunch crunch!";
+  }
+}
+Bacon().drink();
+### END
+
+
+### TEST: this_return_instance
+class Thing {
+  getCallback() {
+    fun localFunction() {
+      print this;
+    }
+
+    return localFunction;
+  }
+}
+
+var callback = Thing().getCallback();
+callback();
+### END
+
+
+
+
+### TEST: this_without_class
+print this;
+### END
+
+### TEST: this_without_class_method
+fun notAMethod() {
+  print this;
+}
+### END
+
+
+
+### TEST: initializer_return_with_value
+class Foo {
+  init() {
+    return "gg";
+  }
+}
+### END
+
+
+### TEST: initializer_return
+class Foo {
+  init() {
+    return ;
+  }
+}
+### END
+
+

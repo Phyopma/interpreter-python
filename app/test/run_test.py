@@ -11,18 +11,15 @@ class TestLox(unittest.TestCase):
             self.project_root, 'your_program.sh')
         self.test_lox = os.path.join(self.project_root, 'test.lox')
 
-        # Test files
-        self.test_dir = os.path.join(
-            self.project_root, 'app/test/test_resolver')
-        self.script_file = os.path.join(self.test_dir, 'script.txt')
-        self.expected_file = os.path.join(self.test_dir, 'expected.txt')
+        # Test root directory
+        self.test_root_dir = os.path.join(self.project_root, 'app/test')
 
-    def read_test_cases(self):
+    def read_test_cases(self, script_file, expected_file):
         """Read test cases from script.txt and expected.txt"""
         test_cases = {}
 
         # Read scripts
-        with open(self.script_file, 'r') as f:
+        with open(script_file, 'r') as f:
             current_test = None
             current_script = []
 
@@ -41,7 +38,7 @@ class TestLox(unittest.TestCase):
                     current_script.append(line)
 
         # Read expected outputs
-        with open(self.expected_file, 'r') as f:
+        with open(expected_file, 'r') as f:
             current_test = None
             current_output = []
 
@@ -74,26 +71,33 @@ class TestLox(unittest.TestCase):
             text=True
         )
 
+        output = result.stdout.strip(
+        ) if result.stderr == "Logs from your program will appear here!\n" else result.stderr.strip()
         # Compare output
         self.assertEqual(
-            result.stderr.strip(),
+
             expected_output.strip(),
+            output,
             f"Test failed!\nExpected:\n{
-                expected_output}\nGot:\n{result.stderr}"
+                expected_output}\nGot:\n{output}"
         )
 
-    def test_resolver_cases(self):
-        """Run all test cases"""
-        test_cases = self.read_test_cases()
+    def test_all_cases(self):
+        """Run all test cases in all subdirectories"""
+        for root, dirs, files in os.walk(self.test_root_dir):
+            if 'script.txt' in files and 'expected.txt' in files:
+                script_file = os.path.join(root, 'script.txt')
+                expected_file = os.path.join(root, 'expected.txt')
+                test_cases = self.read_test_cases(script_file, expected_file)
 
-        for test_name, test_data in test_cases.items():
-
-            with self.subTest(test_name):
-                print(f"Running test: {test_name}")
-                self.run_test_case(
-                    test_data['script'],
-                    test_data['expected']
-                )
+                for test_name, test_data in test_cases.items():
+                    with self.subTest(test_name):
+                        print(f"Running test: {test_name} in {
+                              root.split('/')[-1]}")
+                        self.run_test_case(
+                            test_data['script'],
+                            test_data['expected']
+                        )
 
 
 if __name__ == '__main__':

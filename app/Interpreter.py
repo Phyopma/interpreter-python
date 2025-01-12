@@ -6,6 +6,8 @@ from app.Environment import Environment
 from app.Callable import Callable
 from app.Function import Function
 from app.Return import Return
+from app.Class import Class
+from app.Instance import Instance
 
 
 class Interpreter(Expr.Visitor, Stmt.Visitor):
@@ -100,6 +102,19 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
                 return left
         return self.evaluate(expr.right)
 
+    def visit_set_expr(self, expr):
+        obj = self.evaluate(expr.object)
+
+        if not isinstance(obj, Instance):
+            raise RuntimeError(expr.name, "Only instances have fields.")
+
+        value = self.evaluate(expr.value)
+        obj.set(expr.name, value)
+        return value
+
+    def visit_this_expr(self, expr):
+        return self.look_up_variable(expr.keyword, expr)
+
     def visit_grouping_expr(self, expr):
         return self.evaluate(expr.expression)
 
@@ -115,10 +130,10 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         return None
 
     def visit_variable_expr(self, expr):
-        return self.lookUpVariable(expr.name, expr)
+        return self.look_up_variable(expr.name, expr)
         # return self.environment.get(expr.name)
 
-    def lookUpVariable(self, name, expr):
+    def look_up_variable(self, name, expr):
         distance = self.locals.get(expr)
         if distance is not None:
             return self.environment.getAt(distance, name.lexeme)
@@ -189,6 +204,12 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
                 expr.paren, f"Expected {callee.arity()} arguments but got {len(arguments)}.")
         return callee.call(self, arguments)
 
+    def visit_get_expr(self, expr):
+        obj = self.evaluate(expr.object)
+        if isinstance(obj, Instance):
+            return obj.get(expr.name)
+        raise RuntimeError(expr.name, "Only instances have properties.")
+
     def isEqual(self, a, b):
         if a is None and b is None:
             return True
@@ -208,6 +229,17 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
 
     def visit_block_stmt(self, stmt):
         self.execute_block(stmt.statements, Environment(self.environment))
+        return None
+
+    def visit_class_stmt(self, stmt):
+        self.environment.define(stmt.name.lexeme, None)
+        methods = {}
+        for method in stmt.methods:
+            function = Function(method, self.environment,
+                                method.name.lexeme == "init")
+            methods[method.name.lexeme] = function
+        klass = Class(stmt.name.lexeme, methods)
+        self.environment.assign(stmt.name, klass)
         return None
 
     def execute_block(self, statements, environment):

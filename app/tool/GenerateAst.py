@@ -10,15 +10,19 @@ def main():
         "Assign   : name, value",
         "Binary   : left, operator, right",
         "Call     : callee, paren, arguments",
+        "Get      : object, name",
         "Grouping : expression",
         "Literal  : value",
         "Logical  : left, operator, right",
+        "Set      : object, name, value",
+        "This     : keyword",
         "Unary    : operator, right",
         "Variable : name"
     ])
 
     define_ast(output_dir, "Stmt", [
         "Block      : statements",
+        "Class      : name, methods",
         "Expression : expression",
         "Function   : name, params, body",
         "If         : condition, then_branch, else_branch",

@@ -1,0 +1,56 @@
+### TEST: bare_class_def
+DevonshireCream
+### END
+
+### TEST: bare_Instance_decl
+Bagel instance
+### END
+
+
+### TEST: instance_property_set_get
+10 kcal
+### END
+
+### TEST: instance_property_get_without_set
+Logs from your program will appear here!
+Error: ('Bagel', "Undefined property 'cal'.")
+### END
+
+
+### TEST: method_set_and_call
+Crunch crunch crunch!
+### END
+
+
+### TEST: method_call_without_def
+Logs from your program will appear here!
+Error: ('Bacon', "Undefined property 'drink'.")
+### END
+
+
+### TEST: this_return_instance
+Thing instance
+### END
+
+
+
+### TEST: this_without_class
+Logs from your program will appear here!
+[line 1] Error at 'this': Cannot use 'this' outside of a class.
+### END
+
+### TEST: this_without_class_method
+Logs from your program will appear here!
+[line 2] Error at 'this': Cannot use 'this' outside of a class.
+### END
+
+
+### TEST: initializer_return_with_value
+Logs from your program will appear here!
+[line 3] Error at 'return': Cannot return a value from an initializer.
+### END
+
+
+### TEST: initializer_return
+
+### END

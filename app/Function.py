@@ -4,9 +4,10 @@ from app.Return import Return
 
 
 class Function(Callable):
-    def __init__(self, declaration, closure):
+    def __init__(self, declaration, closure, isInitializer=False):
         self.declaration = declaration
         self.closure = closure
+        self.isIntializer = isInitializer
 
     def arity(self):
         return len(self.declaration.params)
@@ -20,7 +21,14 @@ class Function(Callable):
             interpreter.execute_block(self.declaration.body, environment)
         except Return as returnValue:
             return returnValue.value
+        if self.isIntializer:
+            return self.closure.getAt(0, "this")
         return None
+
+    def bind(self, instance):
+        environment = Environment(self.closure)
+        environment.define("this", instance)
+        return Function(self.declaration, environment, self.isIntializer)
 
     def __str__(self):
         return f"<fn {self.declaration.name.lexeme}>"
