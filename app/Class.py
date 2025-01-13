@@ -2,9 +2,11 @@ from app.Callable import Callable
 from app.Instance import Instance
 
 
-class Class(Callable):
-    def __init__(self, name, methods):
+class Class(Instance, Callable):
+    def __init__(self, name, methods, static_methods):
+        super().__init__(self)
         self.methods = methods
+        self.static_methods = static_methods
         self.name = name
 
     def __str__(self):
@@ -26,4 +28,6 @@ class Class(Callable):
     def find_method(self, name):
         if name in self.methods:
             return self.methods[name]
+        if name in self.static_methods:
+            return self.static_methods[name]
         return None

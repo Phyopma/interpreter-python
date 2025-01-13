@@ -54,3 +54,12 @@ Logs from your program will appear here!
 ### TEST: initializer_return
 
 ### END
+
+### TEST: static_method
+9
+### END
+
+### TEST: this_in_static_method
+Logs from your program will appear here!
+[line 3] Error at 'this': Cannot use 'this' in a static method.
+### END

@@ -97,4 +97,22 @@ class Foo {
 }
 ### END
 
+### TEST: static_method
+class Math {
+  class square(n) {
+    return n * n;
+  }
+}
 
+print Math.square(3); // Prints "9".
+### END
+
+### TEST: this_in_static_method
+class Test {
+  class staticMethod() {
+    print this;
+  }
+}
+
+Test.staticMethod();
+### END

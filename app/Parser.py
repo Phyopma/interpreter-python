@@ -83,10 +83,13 @@ class Parser:
         name = self.consume(tt.IDENTIFIER, "Expect class name.")
 
         self.consume(tt.LEFT_BRACE, "Expect '{' before class body.")
-
         methods = []
         while not self.check(tt.RIGHT_BRACE) and not self.is_at_end():
-            methods.append(self.function("method"))
+            type = "method"
+            if self.check(tt.CLASS):
+                type = "static"
+                self.consume(tt.CLASS, "Expect 'class' before static method.")
+            methods.append(self.function(type))
         self.consume(tt.RIGHT_BRACE, "Expect '}' after class body.")
 
         return Stmt.Class(name, methods)
@@ -198,7 +201,7 @@ class Parser:
         self.consume(tt.RIGHT_PAREN, "Expect ')' after parameters.")
         self.consume(tt.LEFT_BRACE, f"Expect '{{' before {kind} body.")
         body = self.block()
-        return Stmt.Function(name, paramenters, body)
+        return Stmt.Function(name, paramenters, body, kind)
 
     def expression_statement(self):
         expr = self.expression()

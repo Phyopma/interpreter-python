@@ -234,11 +234,15 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
     def visit_class_stmt(self, stmt):
         self.environment.define(stmt.name.lexeme, None)
         methods = {}
+        static_methods = {}
         for method in stmt.methods:
             function = Function(method, self.environment,
                                 method.name.lexeme == "init")
-            methods[method.name.lexeme] = function
-        klass = Class(stmt.name.lexeme, methods)
+            if method.kind == "static":
+                static_methods[method.name.lexeme] = function
+            else:
+                methods[method.name.lexeme] = function
+        klass = Class(stmt.name.lexeme, methods, static_methods)
         self.environment.assign(stmt.name, klass)
         return None
 

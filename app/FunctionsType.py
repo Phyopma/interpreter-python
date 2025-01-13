@@ -6,3 +6,4 @@ class FunctionsType(Enum):
     NONE = auto()
     FUNCTION = auto()
     INITIALIZER = auto()
+    STATIC = auto()

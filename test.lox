@@ -1,5 +1,7 @@
-class Foo {
-  init() {
-    return ;
+class Test {
+  class staticMethod() {
+    print this;
   }
 }
+
+Test.staticMethod();

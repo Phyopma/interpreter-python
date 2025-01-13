@@ -48,10 +48,11 @@ class Expression(Stmt):
     def accept(self, visitor):
         return visitor.visit_expression_stmt(self)
 class Function(Stmt):
-    def __init__(self, name, params, body):
+    def __init__(self, name, params, body, kind):
         self.name = name
         self.params = params
         self.body = body
+        self.kind = kind
     def accept(self, visitor):
         return visitor.visit_function_stmt(self)
 class If(Stmt):

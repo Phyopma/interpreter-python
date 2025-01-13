@@ -24,7 +24,7 @@ def main():
         "Block      : statements",
         "Class      : name, methods",
         "Expression : expression",
-        "Function   : name, params, body",
+        "Function   : name, params, body, kind",
         "If         : condition, then_branch, else_branch",
         "Print      : expression",
         "Return     : keyword, value",
