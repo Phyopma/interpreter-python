@@ -60,27 +60,37 @@ class TestLox(unittest.TestCase):
 
     def run_test_case(self, script, expected_output):
         """Run a single test case"""
-        # Write script to test.lox
-        with open(self.test_lox, 'w') as f:
-            f.write(script)
 
-        # Run interpreter
-        result = subprocess.run(
-            ['/bin/bash', self.program_script, 'run', self.test_lox],
-            capture_output=True,
-            text=True
-        )
+        # Save the original content of test.lox
+        with open(self.test_lox, 'r') as f:
+            original_content = f.read()
 
-        output = result.stdout.strip(
-        ) if result.stderr == "Logs from your program will appear here!\n" else result.stderr.strip()
-        # Compare output
-        self.assertEqual(
+        try:
+            # Write script to test.lox
+            with open(self.test_lox, 'w') as f:
+                f.write(script)
 
-            expected_output.strip(),
-            output,
-            f"Test failed!\nExpected:\n{
-                expected_output}\nGot:\n{output}"
-        )
+            # Run interpreter
+            result = subprocess.run(
+                ['/bin/bash', self.program_script, 'run', self.test_lox],
+                capture_output=True,
+                text=True
+            )
+
+            output = result.stdout.strip(
+            ) if result.stderr == "Logs from your program will appear here!\n" else result.stderr.strip()
+            # Compare output
+            self.assertEqual(
+
+                expected_output.strip(),
+                output,
+                f"Test failed!\nExpected:\n{
+                    expected_output}\nGot:\n{output}"
+            )
+        finally:
+            # Restore the original content of test.lox
+            with open(self.test_lox, 'w') as f:
+                f.write(original_content)
 
     def test_all_cases(self):
         """Run all test cases in all subdirectories"""

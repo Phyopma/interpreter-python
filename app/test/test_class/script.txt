@@ -116,3 +116,36 @@ class Test {
 
 Test.staticMethod();
 ### END
+
+
+### TEST: class_getter_with_()
+class Circle {
+  init(radius) {
+    this.radius = radius;
+  }
+
+  area {
+    return 3.141592653 * this.radius * this.radius;
+  }
+}
+
+var circle = Circle(4);
+print circle.area(); // Prints roughly "50.2655".
+### END
+
+
+
+### TEST: class_getter
+class Circle {
+  init(radius) {
+    this.radius = radius;
+  }
+
+  area {
+    return 3.141592653 * this.radius * this.radius;
+  }
+}
+
+var circle = Circle(4);
+print circle.area; // Prints roughly "50.2655".
+### END

@@ -7,3 +7,4 @@ class FunctionsType(Enum):
     FUNCTION = auto()
     INITIALIZER = auto()
     STATIC = auto()
+    GETTER = auto()

@@ -207,7 +207,10 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
     def visit_get_expr(self, expr):
         obj = self.evaluate(expr.object)
         if isinstance(obj, Instance):
-            return obj.get(expr.name)
+            value = obj.get(expr.name)
+            if isinstance(value, Function) and value.declaration.kind == "getter":
+                return value.call(self, [])
+            return value
         raise RuntimeError(expr.name, "Only instances have properties.")
 
     def isEqual(self, a, b):
@@ -237,7 +240,7 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         static_methods = {}
         for method in stmt.methods:
             function = Function(method, self.environment,
-                                method.name.lexeme == "init")
+                                method.name.lexeme == "init", method.kind)
             if method.kind == "static":
                 static_methods[method.name.lexeme] = function
             else:

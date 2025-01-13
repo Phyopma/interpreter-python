@@ -63,3 +63,14 @@ Logs from your program will appear here!
 Logs from your program will appear here!
 [line 3] Error at 'this': Cannot use 'this' in a static method.
 ### END
+
+### TEST: class_getter_with_()
+Logs from your program will appear here!
+Can only call functions and classes.
+[line 12]
+### END
+
+
+### TEST: class_getter
+50.265482448
+### END

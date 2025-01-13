@@ -187,6 +187,12 @@ class Parser:
 
     def function(self, kind):
         name = self.consume(tt.IDENTIFIER, f"Expect {kind} name.")
+        # Getter
+        if self.check(tt.LEFT_BRACE):
+            self.consume(tt.LEFT_BRACE, f"Expect '{{' before {kind} body.")
+            body = self.block()
+            return Stmt.Function(name, [], body, "getter")
+        # Function
         self.consume(tt.LEFT_PAREN, f"Expect '(' after {kind} name.")
         paramenters = []
         if not self.check(tt.RIGHT_PAREN):

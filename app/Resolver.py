@@ -33,6 +33,8 @@ class Resolver(Expr.Visitor, Stmt.Visitor):
                 declaration = ft.INITIALIZER
             elif method.kind == "static":
                 declaration = ft.STATIC
+            elif method.kind == "getter":
+                declaration = ft.GETTER
             self.resolve_function(method, declaration)
         self.define(stmt.name)
         self.end_scope()
@@ -185,7 +187,7 @@ class Resolver(Expr.Visitor, Stmt.Visitor):
             error.token_error(
                 expr.keyword, "Cannot use 'this' outside of a class.")
             return None
-        elif self.current_function == ft.STATIC:
+        if self.current_function == ft.STATIC:
             error.token_error(
                 expr.keyword, "Cannot use 'this' in a static method.")
             return None
