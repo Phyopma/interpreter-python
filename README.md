@@ -75,11 +75,6 @@ To run the program in a development environment, you can use the provided VS Cod
 
 To test the interpreter, you can use the provided `test.lox` file or create your own Lox scripts.
 
----
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
 
 ---
 
