@@ -112,6 +112,17 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         obj.set(expr.name, value)
         return value
 
+    def visit_super_expr(self, expr):
+        distance = self.locals.get(expr)
+        superclass = self.environment.getAt(distance, "super")
+        obj = self.environment.getAt(distance - 1, "this")
+        method = superclass.find_method(expr.method.lexeme)
+        if (method is None):
+            raise RuntimeError(expr.method, f"Undefined property '{
+                               expr.method.lexeme}'.")
+
+        return method.bind(obj)
+
     def visit_this_expr(self, expr):
         return self.look_up_variable(expr.keyword, expr)
 
@@ -235,7 +246,16 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         return None
 
     def visit_class_stmt(self, stmt):
+        superclass = None
+        if (stmt.superclass is not None):
+            superclass = self.evaluate(stmt.superclass)
+            if (not isinstance(superclass, Class)):
+                raise RuntimeError(stmt.superclass.name,
+                                   "Superclass must be a class.")
         self.environment.define(stmt.name.lexeme, None)
+        if (stmt.superclass is not None):
+            self.environment = Environment(self.environment)
+            self.environment.define("super", superclass)
         methods = {}
         static_methods = {}
         for method in stmt.methods:
@@ -245,7 +265,9 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
                 static_methods[method.name.lexeme] = function
             else:
                 methods[method.name.lexeme] = function
-        klass = Class(stmt.name.lexeme, methods, static_methods)
+        klass = Class(stmt.name.lexeme, superclass, methods, static_methods)
+        if (superclass is not None):
+            self.environment = self.environment.enclosing
         self.environment.assign(stmt.name, klass)
         return None
 

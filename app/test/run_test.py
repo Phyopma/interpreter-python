@@ -96,6 +96,9 @@ class TestLox(unittest.TestCase):
         """Run all test cases in all subdirectories"""
         for root, dirs, files in os.walk(self.test_root_dir):
             if 'script.txt' in files and 'expected.txt' in files:
+                print("-" * 50)
+                print("Running tests in", root.split('/')[-1])
+                print("\n")
                 script_file = os.path.join(root, 'script.txt')
                 expected_file = os.path.join(root, 'expected.txt')
                 test_cases = self.read_test_cases(script_file, expected_file)

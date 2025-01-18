@@ -1,0 +1,23 @@
+### TEST: class_inheritance
+Fry until golden brown.
+### END
+
+### TEST: class_inheritance_self
+Logs from your program will appear here!
+[line 1] Error at 'Oops': A class cannot inherit from itself.
+### END
+
+### TEST: class_inheritance_non_class
+Logs from your program will appear here!
+Superclass must be a class.
+[line 3]
+### END
+
+### TEST: class_eclair
+Logs from your program will appear here!
+[line 3] Error at 'super': Cannot use 'super' in a class with no superclass.
+### END
+
+### TEST: class_inheritance_method_call
+A method
+### END

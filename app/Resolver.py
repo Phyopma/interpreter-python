@@ -25,8 +25,20 @@ class Resolver(Expr.Visitor, Stmt.Visitor):
         enclosing_class = self.current_class
         self.current_class = ct.CLASS
         self.declare(stmt.name)
+        if (stmt.superclass is not None):
+            if (stmt.name.lexeme == stmt.superclass.name.lexeme):
+                error.token_error(
+                    stmt.superclass.name, "A class cannot inherit from itself.")
+            self.current_class = ct.SUBCLASS
+            self.resolve_expr(stmt.superclass)
+
+        if (stmt.superclass is not None):
+            self.begin_scope()
+            self.scopes[-1]["super"] = True
+
         self.begin_scope()
         self.scopes[-1]["this"] = True
+
         for method in stmt.methods:
             declaration = ft.METHOD
             if method.name.lexeme == "init":
@@ -38,6 +50,9 @@ class Resolver(Expr.Visitor, Stmt.Visitor):
             self.resolve_function(method, declaration)
         self.define(stmt.name)
         self.end_scope()
+
+        if (stmt.superclass is not None):
+            self.end_scope()
         self.current_class = enclosing_class
         return None
 
@@ -180,6 +195,17 @@ class Resolver(Expr.Visitor, Stmt.Visitor):
     def visit_set_expr(self, expr):
         self.resolve_expr(expr.value)
         self.resolve_expr(expr.object)
+        return None
+
+    def visit_super_expr(self, expr):
+        if (self.current_class == ct.NONE):
+            error.token_error(
+                expr.keyword, "Cannot use 'super' outside of a class.")
+        elif (self.current_class != ct.SUBCLASS):
+            error.token_error(
+                expr.keyword, "Cannot use 'super' in a class with no superclass.")
+
+        self.resolve_local(expr, expr.keyword)
         return None
 
     def visit_this_expr(self, expr):

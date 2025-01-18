@@ -15,6 +15,7 @@ def main():
         "Literal  : value",
         "Logical  : left, operator, right",
         "Set      : object, name, value",
+        "Super    : keyword, method",
         "This     : keyword",
         "Unary    : operator, right",
         "Variable : name"
@@ -22,7 +23,7 @@ def main():
 
     define_ast(output_dir, "Stmt", [
         "Block      : statements",
-        "Class      : name, methods",
+        "Class      : name, superclass, methods",
         "Expression : expression",
         "Function   : name, params, body, kind",
         "If         : condition, then_branch, else_branch",

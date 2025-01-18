@@ -3,10 +3,11 @@ from app.Instance import Instance
 
 
 class Class(Instance, Callable):
-    def __init__(self, name, methods, static_methods):
+    def __init__(self, name, superclass, methods, static_methods):
         super().__init__(self)
         self.methods = methods
         self.static_methods = static_methods
+        self.superclass = superclass
         self.name = name
 
     def __str__(self):
@@ -30,4 +31,6 @@ class Class(Instance, Callable):
             return self.methods[name]
         if name in self.static_methods:
             return self.static_methods[name]
+        if self.superclass is not None:
+            return self.superclass.find_method(name)
         return None
