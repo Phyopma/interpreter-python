@@ -4,6 +4,59 @@ This project is a Python implementation of an interpreter for the Lox programmin
 
 ---
 
+## Architecture
+
+### Recursive Descent Parsing
+
+The parser uses a **Variable Recursive Descent** strategy. Each grammar rule maps to a Python function.
+
+- **Precedence Handling**: Lower precedence operations (like `term` for `+`) call higher precedence functions (like `factor` for `*`) first.
+- **Associativity**:
+  - **Left-Associativity** (`+`, `-`, `*`, `/`) is handled via `while` loops to avoid recursion loops.
+  - **Right-Associativity** (Assignment `=`, Unary `!`) is handled via recursive calls.
+
+```mermaid
+graph TD
+    Root["Expr.Binary (+)"]
+    Left1["Expr.Literal (1)"]
+    Right1["Expr.Binary (*)"]
+    
+    Left2["Expr.Literal (2)"]
+    Right2["Expr.Literal (3)"]
+    
+    Root -->|left| Left1
+    Root -->|right| Right1
+    
+    Right1 -->|left| Left2
+    Right1 -->|right| Right2
+```
+
+### Visitor Pattern
+
+The interpreter uses the **Visitor Pattern** to separate the data classes (`Expr`, `Stmt`) from the operations performed on them (`Interpreter`, `Resolver`, `AstPrinter`).
+
+- **Double Dispatch**: Nodes call `accept(visitor)`, which calls back `visitor.visit_specific_node(self)`.
+- **Extensibility**: New operations (like a Linter or Optimizer) can be added by creating a new Visitor without changing the AST classes.
+
+```mermaid
+sequenceDiagram
+    participant I as Interpreter (Visitor)
+    participant B as Binary Node (Element)
+    
+    I->>B: evaluate(binary_node) calls accept(interpreter)
+    activate B
+    B->>I: visit_binary_expr(self)
+    deactivate B
+    
+    activate I
+    I->>I: Evaluate Left & Right
+    I->>I: Compute Result
+    I-->>B: Return Result
+    deactivate I
+```
+
+---
+
 ## Project Structure
 
 ### Files and Directories
