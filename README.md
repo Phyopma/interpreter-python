@@ -55,6 +55,32 @@ sequenceDiagram
     deactivate I
 ```
 
+
+### Environment & Variable Scope
+
+Variables are managed using **Environment Chaining**, implemented as a linked list of hash maps.
+
+- **Shadowing**: The interpreter searches the current scope first. If not found, it recursively checks the `enclosing` (parent) scope.
+- **Assignment**: Variable assignment (`a = 2`) strictly modifies the *nearest* existing variable, preventing accidental creation of global variables.
+
+```mermaid
+graph TD
+    subgraph Global Environment
+    Global["Values: {a: 'global'}"]
+    end
+    
+    subgraph Inner Environment
+    Inner["Values: {a: 'inner'}"]
+    end
+    
+    Inner -->|enclosing| Global
+    
+    Interpreter -->|Looking up 'a'| Inner
+    
+    style Inner fill:#bfb,stroke:#333
+    style Global fill:#eef,stroke:#333
+```
+
 ---
 
 ## Project Structure
